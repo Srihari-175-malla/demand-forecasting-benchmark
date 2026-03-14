@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ForecastLab - Comparative Time Series Forecasting Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    
+    <!-- Top Header -->
+    <header class="navbar">
+      <div class="logo-group">
+        <div class="logo-icon">📈</div>
+        <div class="logo-title">Forecast<span class="highlight">Lab</span> <span class="badge">SARIMA • Prophet • PyTorch LSTM</span></div>
+      </div>
+      <nav class="nav-tabs">
+        <button class="nav-btn active" id="tab-btn-charts" onclick="switchNavTab('charts-view')">📈 Forecast Canvas & Confidence Bands</button>
+        <button class="nav-btn" id="tab-btn-metrics" onclick="switchNavTab('metrics-view')">🏆 MAE / RMSE / MAPE Metrics</button>
+        <button class="nav-btn" id="tab-btn-stationarity" onclick="switchNavTab('stationarity-view')">📐 Stationarity & ACF/PACF</button>
+        <button class="nav-btn" id="tab-btn-analysis" onclick="switchNavTab('analysis-view')">💡 Comparative Analysis</button>
+      </nav>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Theme">🌙</button>
+    </header>
+
+    <!-- Main View Area -->
+    <main class="main-view">
+
+      <!-- Controls Toolbar -->
+      <div class="controls-card">
+        <div class="control-group">
+          <label>Forecast Horizon:</label>
+          <select id="horizon-select" onchange="runForecastComparison()">
+            <option value="7">Short-Term Horizon (7 Days)</option>
+            <option value="30">Long-Term Horizon (30 Days)</option>
+          </select>
+        </div>
+
+        <button class="btn primary" id="solve-btn" onclick="runForecastComparison()">⚡ Run Multi-Model Forecast Comparison</button>
+      </div>
+
+      <!-- VIEW 1: FORECAST CANVAS & CONFIDENCE BANDS -->
+      <section id="charts-view" class="view-content active">
+        <div class="card-full">
+          <h2>📈 Point Forecasts & 95% Confidence Intervals</h2>
+          <p>Visualizes actual energy demand vs point forecasts and 95% confidence bands across all models.</p>
+
+          <div class="canvas-wrapper" style="margin-top: 1.5rem;">
+            <canvas id="forecast-canvas" width="850" height="380"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: MULTI-HORIZON METRIC LEADERBOARD -->
+      <section id="metrics-view" class="view-content">
+        <div class="card-full">
+          <h2>🏆 Multi-Horizon Metric Leaderboard</h2>
+          <p>Evaluates MAE, RMSE, and MAPE metrics on the same test dataset split.</p>
+
+          <div class="table-wrapper" style="margin-top: 1.5rem;">
+            <table class="data-table" id="metrics-table">
+              <thead>
+                <tr>
+                  <th>Model Paradigm</th>
+                  <th>Mean Absolute Error (MAE)</th>
+                  <th>Root Mean Squared Error (RMSE)</th>
+                  <th>Mean Absolute Percentage Error (MAPE %)</th>
+                  <th>Performance Rank</th>
+                </tr>
+              </thead>
+              <tbody><!-- Populated dynamically --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: STATIONARITY & ACF/PACF -->
+      <section id="stationarity-view" class="view-content">
+        <div class="card-full">
+          <h2>📐 Augmented Dickey-Fuller (ADF) & Autocorrelation Analysis</h2>
+          <p>Stationarity verification and ACF/PACF lag structure used for SARIMA order selection.</p>
+
+          <div class="metrics-row" style="margin-top: 1.25rem;">
+            <div class="stat-box"><div class="stat-num" id="stat-adf-stat">0.00</div><div class="stat-lbl">ADF t-Statistic</div></div>
+            <div class="stat-box"><div class="stat-num" id="stat-adf-p">0.0000</div><div class="stat-lbl">p-Value</div></div>
+            <div class="stat-box"><div class="stat-num" id="stat-differencing">d=1</div><div class="stat-lbl">Differencing Order (d)</div></div>
+          </div>
+
+          <h3 style="margin-top: 1.5rem;">Autocorrelation (ACF) & Partial Autocorrelation (PACF)</h3>
+          <div class="table-wrapper" style="margin-top: 0.75rem;">
+            <table class="data-table" id="acf-table">
+              <thead>
+                <tr>
+                  <th>Lag (Days)</th>
+                  <th>ACF Value</th>
+                  <th>PACF Value</th>
+                </tr>
+              </thead>
+              <tbody><!-- Populated dynamically --></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: COMPARATIVE ANALYSIS -->
+      <section id="analysis-view" class="view-content">
+        <div class="card-full">
+          <h2>💡 Technical Comparative Analysis & Architectural Trade-offs</h2>
+          <div id="analysis-container" style="margin-top: 1.5rem;" class="analysis-list"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
